@@ -1,65 +1,63 @@
-import { Component } from "react";
+import { useState } from "react";
+import CurLocation from "../functions/CurLocation";
 
-class Location extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            search: "",
-            foundlocations: []
-        }
-    }
+function Location() {
+  const [foundLocations, setFoundLocations] = useState([]);
+  const [search, setSearch] = useState("");
+  const [curLocation, setCurLocation] = useState("");
 
-    findLocations(e) {
-        if(this.state.search != ""){
-            this.setState({foundlocations: []
-            }, () => (
-                //Possibly make the limit adjustable but for now I WANT IT ALL :)
-                fetch("https://api.geoapify.com/v1/geocode/search?text=" + this.state.search + "&apiKey=" + process.env.REACT_APP_GEOAPIFY_API_KEY + "&limit=100")
-                .then(res => res.json())
-                .then((res) => {
-                    this.setState(state => {
-                        const locations = state.foundlocations.concat(res.features.map((feature, k) => (
-                            <p key={k}>{feature.properties.formatted} {feature.properties.lon} {feature.properties.lat}</p>
-                            )));
-
-                        return({locations});
-                    });
-                })
-            ));
-        }
-    }
-    getCurrLocation(){
-        this.setState({curLocation: ""
-        }, () => (
-            fetch("http://ip-api.com/json/")
-            .then(res => res.json())
-            .then((res) => {
-                console.log(res)
-                this.setState({
-                    curLocation: <p>{res.city} {res.country} {res.query} {res.lon} {res.lat}</p>
-                });
-            })
-        ));
-    }
-
-    setSearch(e) {
-        this.setState({
-              search: e.target.value 
+  function findLocations(e) {
+    if (search !== "") {
+      //Possibly make the limit adjustable but for now I WANT IT ALL :)
+      fetch(
+        `https://api.geoapify.com/v1/geocode/search?text=${search}&apiKey=${process.env.REACT_APP_GEOAPIFY_API_KEY}&limit=100`
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          setFoundLocations(
+            res.features.map((feature, k) => (
+              <p key={k}>
+                {feature.properties.formatted} {feature.properties.lon}{" "}
+                {feature.properties.lat}
+              </p>
+            ))
+          );
         });
     }
-
-    render(){
-        return (
-            <div>
-                <button type="button" onClick={this.findLocations.bind(this)}>Find Location</button>
-                <input type="text" onChange={this.setSearch.bind(this)}></input><br/>
-                {this.state.locations}<br/>
-                <button type="button" onClick={this.getCurrLocation.bind(this)}>Get Current Location</button><br/>
-                {this.state.curLocation}
-            </div>
+  }
+  function getCurLocation() {
+    fetch("http://ip-api.com/json/")
+      .then((res) => res.json())
+      .then((res) => {
+        setCurLocation(
+          <p>
+            {res.city} {res.country} {res.query} {res.lon} {res.lat}
+          </p>
         );
+      });
+  }
 
-    }
+  function updateSearch(e) {
+    setSearch(e.target.value);
+  }
+  return (
+    <div>
+      <button type="button" onClick={findLocations}>
+        Find Location
+      </button>
+      <input type="text" onChange={updateSearch}></input>
+      <br />
+      {foundLocations}
+      <br />
+      <button
+        type="button"
+        onClick={() => CurLocation().then((d) => setCurLocation(d))}>
+        Get Current Location
+      </button>
+      {curLocation}
+      <br />
+    </div>
+  );
 }
 
 export default Location;
