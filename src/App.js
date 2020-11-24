@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Currency from "./components/Currency.jsx";
 import Location from "./components/Location.jsx";
 import Weather from "./components/Weather.jsx";
+import Home from "./components/Home";
 
 function App() {
   return (
@@ -44,7 +45,7 @@ function App() {
             <Weather />
           </Route>
           <Route path="/">
-            <h2>HOME</h2>
+            <Home />
           </Route>
         </Switch>
       </div>

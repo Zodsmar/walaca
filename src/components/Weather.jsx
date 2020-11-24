@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FetchURL from "../functions/FetchURL";
+import { FetchURL } from "../functions/Utilities";
 
 function Weather() {
   const [curWeather, setCurWeather] = useState("");

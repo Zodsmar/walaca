@@ -1,6 +1,6 @@
 import { useState } from "react";
 import arrow from "../assets/arrow.svg";
-import FetchURL from "../functions/FetchURL";
+import { FetchURL } from "../functions/Utilities";
 import "./Currency.css";
 
 function Currency() {
